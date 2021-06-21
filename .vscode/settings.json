@@ -1,0 +1,57 @@
+{
+    "files.exclude": {
+        "**/*.o": true,
+        "**/*.pyc": true, //隐藏所有pyc文件
+        "bin": true,
+        "pkg": true,
+        "**/*.pdf": true
+        // "logs": true,
+
+    },
+    "search.exclude": {
+        "common/pdf": false,
+        "**/*.pyc": true, //隐藏所有pyc文件
+        "src/*": true,
+        "pkg": true,
+        // "logs": true,
+
+    },
+    "editor.wordWrap": "on",
+    "editor.minimap.renderCharacters": false,
+    "editor.minimap.enabled": false,
+    "window.zoomLevel": 1,
+    "editor.detectIndentation": false,
+    "editor.insertSpaces": true, //转为空格
+
+    "go.autocompleteUnimportedPackages": true,
+    "go.gocodePackageLookupMode": "go",
+    "go.gotoSymbol.includeImports": true,
+    "go.useCodeSnippetsOnFunctionSuggest": true,
+    "go.inferGopath": false,
+    "go.gopath": "C:\\Users\\byy\\go",
+    "go.useCodeSnippetsOnFunctionSuggestWithoutType": true,
+    "debug.console.fontSize": 14,
+    "debug.console.lineHeight": 20,
+    "go.useLanguageServer": true,
+
+    "go.buildOnSave": true,
+    "go.lintOnSave": true,
+    "go.vetOnSave": true,
+    "go.buildFlags": [],
+    "go.lintFlags": [],
+    "go.vetFlags": [],
+    "go.formatOnSave": true,
+
+    // "go.goroot": "/usr/local/go",
+    // // "go.docsTool": "gogetdoc",
+    // "go.testFlags": ["-v","-count=1"],
+    // "go.buildTags": "",
+    // "go.coverOnSave": false,
+    // "go.useCodeSnippetsOnFunctionSuggest": false,
+    "go.formatTool": "goreturns",
+    "go.docsTool": "guru",
+    "python.formatting.provider": "yapf",
+    // "go.gocodeAutoBuild": false,
+
+    // "git.ignoreLimitWarning": true
+}
