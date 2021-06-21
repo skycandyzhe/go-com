@@ -5,8 +5,9 @@ import (
 	"os"
 	"strings"
 	"time"
+	"yaratest/go-com/common/config"
 
-	"powershellDeal/common/config"
+	// "../config"
 
 	rotatelogs "github.com/lestrrat-go/file-rotatelogs"
 	"go.uber.org/zap"

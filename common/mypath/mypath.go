@@ -18,6 +18,12 @@ func GetCurrentPath() string {
 	return p
 }
 
+//check file
+func PathExist(path string) (bool, error) {
+	fi, err := os.Stat(path)
+	return (err == nil || os.IsExist(err)) && fi.IsDir(), err
+}
+
 func IsExist(path string) bool {
 	_, err := os.Stat(path)
 	if err != nil {
@@ -34,7 +40,7 @@ func IsExist(path string) bool {
 }
 
 /**
-判断文件是否存在
+判断目录是否存在
 */
 func IsDir(fileAddr string) bool {
 	s, err := os.Stat(fileAddr)
@@ -43,6 +49,18 @@ func IsDir(fileAddr string) bool {
 		return false
 	}
 	return s.IsDir()
+}
+
+/**
+判断文件是否存在
+*/
+func IsFile(fileAddr string) bool {
+	s, err := os.Stat(fileAddr)
+	if err != nil {
+		log.Println(err)
+		return false
+	}
+	return !s.IsDir()
 }
 
 /**
