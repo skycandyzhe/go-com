@@ -4,7 +4,6 @@ import (
 	"io"
 	"io/ioutil"
 	"os"
-	"powershellDeal/common/logger"
 )
 
 func checkFileIsExist(filename string) bool {
@@ -13,18 +12,19 @@ func checkFileIsExist(filename string) bool {
 	}
 	return true
 }
-func WriteStr(data string, filename string) {
+func WriteStr(data string, filename string) error {
 	var f *os.File
-	var err1 error
+	var err error
 	if checkFileIsExist(filename) { //如果文件存在
 		f, _ = os.OpenFile(filename, os.O_APPEND, 0666) //打开文件
 	} else {
 		f, _ = os.Create(filename) //创建文件
 	}
 	defer f.Close()
-	_, err1 = io.WriteString(f, data) //写入文件(字符串)
-	if err1 != nil {
-		logger.Logger.Error("file write failure :", filename)
+	_, err = io.WriteString(f, data) //写入文件(字符串)
+	if err != nil {
+		return err
+
 	}
 
 }
