@@ -15,13 +15,6 @@ func ConverUtf16beToStr(src string) string {
 	return string(bs_UTF8LE)
 }
 
-// func test() {
-// 	bs_UTF16LE, _, _ := transform.Bytes(unicode.UTF16(unicode.LittleEndian, unicode.IgnoreBOM).NewEncoder(), []byte("测试"))
-// 	bs_UTF16BE, _, _ := transform.Bytes(unicode.UTF16(unicode.BigEndian, unicode.IgnoreBOM).NewEncoder(), []byte("测试"))
-// 	bs_UTF8LE, _, _ := transform.Bytes(unicode.UTF16(unicode.LittleEndian, unicode.IgnoreBOM).NewDecoder(), bs_UTF16LE)
-// 	bs_UTF8BE, _, _ := transform.Bytes(unicode.UTF16(unicode.BigEndian, unicode.IgnoreBOM).NewDecoder(), bs_UTF16BE)
-// }
-
 func ValidUTF8(buf []byte) bool {
 	nBytes := 0
 	for i := 0; i < len(buf); i++ {

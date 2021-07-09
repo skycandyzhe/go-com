@@ -56,18 +56,6 @@
 
                 "PYTHONPATH": "/home/testpoc/codes/msf_auto_chain"
             }
-        },
-        // {
-        //     "name": "go run Launch file",
-        //     "type": "go",
-        //     "request": "launch",
-        //     "mode": "debug",
-        //     "program": "${file}",
-        //     "env": {
-
-        //         "GO111MODULE": "auto"
-        //     }
-        // }
+        }
     ]
 }
-// export PYTHONPATH=/home/testpoc/opensource/Ti_Collector

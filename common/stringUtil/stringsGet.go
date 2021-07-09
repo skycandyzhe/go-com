@@ -51,31 +51,3 @@ func GetContentStringSet(content string) []string {
 	return strSet
 
 }
-
-// class Strings():
-//     """Extract strings from analyzed file."""
-//     MAX_FILESIZE = 16 * 1024 * 1024
-//     MAX_STRINGCNT = 2048
-//     MAX_STRINGLEN = 1024
-
-//     def __init__(self, file_path):
-//         self.file_path = file_path
-
-//     def run(self):
-//         """Run extract of printable strings.
-//         @return: list of printable strings.
-//         """
-//         self.key = "strings"
-//         strings = []
-
-//         for s in re.findall(b"[\x1f-\x7e]{6,}", data):
-//             strings.append(s.decode("utf-8"))
-//         for s in re.findall(b"(?:[\x1f-\x7e][\x00]){6,}", data):
-//             strings.append(s.decode("utf-16le"))
-
-//         # Now limit the amount & length of the strings.
-//         strings = strings[:self.MAX_STRINGCNT]
-//         for idx, s in enumerate(strings):
-//             strings[idx] = s[:self.MAX_STRINGLEN]
-
-//         return strings
