@@ -83,3 +83,32 @@ func BoomSpit(src []byte) (data []byte, strtype string) {
 		return src, ""
 	}
 }
+
+// 字符串拼接
+func Str_Link(str ...string) string {
+
+	return Str_LinkBySpecialChar(rune('_'), str...)
+}
+
+/*
+
+ */
+func Str_LinkBySpecialChar(joinstr rune, str ...string) string {
+
+	var ret []rune
+	// _str1:=strings.tr
+	for _, tstr := range str {
+		t := 0
+		for _, b_ := range tstr {
+			if b_ != joinstr {
+				t++
+				ret = append(ret, b_)
+			}
+		}
+		ret = append(ret, joinstr)
+	}
+	if len(ret) > 0 {
+		return string(ret[:len(ret)-1])
+	}
+	return ""
+}
