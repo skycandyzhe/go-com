@@ -1,27 +1,27 @@
 package trieTree
 
-type trieNode struct {
+type TrieNode struct {
 	isWord bool // 是否是单词结尾
-	next   map[rune]*trieNode
+	next   map[rune]*TrieNode
 }
 
-type trie struct {
+type Trie struct {
 	size int // 节点数量
-	root *trieNode
+	root *TrieNode
 }
 
-func NewTrie() *trie {
-	return &trie{
+func NewTrie() *Trie {
+	return &Trie{
 		0,
-		&trieNode{false, make(map[rune]*trieNode)},
+		&TrieNode{false, make(map[rune]*TrieNode)},
 	}
 }
-func (u *trie) GetSize() int {
+func (u *Trie) GetSize() int {
 	return u.size
 }
 
 // 非递归算法
-func (u *trie) Add(word string) {
+func (u *Trie) Add(word string) {
 	if len(word) == 0 {
 		return
 	}
@@ -30,7 +30,7 @@ func (u *trie) Add(word string) {
 	for _, v := range word {
 		_, ok := cur.next[v] // 在NewTrie中已经初始化，能直接用
 		if !ok {
-			cur.next[v] = &trieNode{false, map[rune]*trieNode{}}
+			cur.next[v] = &TrieNode{false, map[rune]*TrieNode{}}
 		}
 		cur = cur.next[v]
 	}
@@ -44,10 +44,10 @@ func (u *trie) Add(word string) {
 /*
  查询是否包含某个单词
  input  abc
- trieTree中存在 abcde
+ TrieTree中存在 abcde
  返回 true
 */
-func (u *trie) Contains(word string) bool {
+func (u *Trie) Contains(word string) bool {
 	if len(word) == 0 {
 		return false
 	}
@@ -66,10 +66,10 @@ func (u *trie) Contains(word string) bool {
 /*
  前缀是否有以word为前缀的单词
  input  abc
- trieTree中存在 abcde
+ TrieTree中存在 abcde
  返回 true
 */
-func (u *trie) IsPrefix(word string) bool {
+func (u *Trie) IsPrefix(word string) bool {
 	if len(word) == 0 {
 		return false
 	}
@@ -89,10 +89,10 @@ func (u *trie) IsPrefix(word string) bool {
 // 查看树中有没有对应的最长前缀
 /*
  input  abcdee
- trieTree中存在 abc
+ TrieTree中存在 abc
  返回 true  abc
 */
-func (u *trie) HasPrefix(word string) (bool, string) {
+func (u *Trie) HasPrefix(word string) (bool, string) {
 	if len(word) == 0 {
 		// 空字符串没有前面
 		return false, ""

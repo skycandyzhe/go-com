@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"io/ioutil"
 
+	"github.com/skycandyzhe/go-com/file"
 	"gopkg.in/yaml.v2"
 )
 
@@ -11,14 +12,15 @@ import (
 type BaseInfo struct {
 	Version   string     `yaml:"version"`
 	DebugFlag bool       `yaml:"debugFlag"`
-	Timelimit int        `yaml:"timelimit"`
+	Console   bool       `yaml:"console"`
 	Logs      LogsEntity `yaml:"logs"`
 }
 
 type LogsEntity struct {
-	Log_level string `yaml:"log_level"`
-	Log_path  string `yaml:"log_path"`
-	Err_path  string `yaml:"err_path"`
+	// Log_level string `yaml:"log_level"`
+	LogName  string `yaml:"logname"`
+	Log_path string `yaml:"log_path"`
+	Err_path string `yaml:"err_path"`
 }
 
 func (c *BaseInfo) GetConf(filepath string) *BaseInfo {
@@ -38,7 +40,13 @@ func (c *BaseInfo) GetConf(filepath string) *BaseInfo {
 var Conf *BaseInfo
 
 func init() {
-	Conf = &BaseInfo{}
-	Conf = Conf.GetConf("config.yaml")
-	fmt.Println("read config.yaml :", Conf)
+	if file.CheckFileIsExist("log_config.yaml") {
+		Conf = &BaseInfo{}
+		Conf = Conf.GetConf("log_config.yaml")
+		fmt.Println("read config.yaml :", Conf)
+	} else {
+		Conf = nil
+		fmt.Println("not found log_config.yaml")
+	}
+
 }

@@ -1,12 +1,13 @@
 package file
 
 import (
+	"fmt"
 	"io"
 	"io/ioutil"
 	"os"
 )
 
-func checkFileIsExist(filename string) bool {
+func CheckFileIsExist(filename string) bool {
 	if _, err := os.Stat(filename); os.IsNotExist(err) {
 		return false
 	}
@@ -15,7 +16,7 @@ func checkFileIsExist(filename string) bool {
 func WriteStr(data string, filename string) error {
 	var f *os.File
 	var err error
-	if checkFileIsExist(filename) { //如果文件存在
+	if CheckFileIsExist(filename) { //如果文件存在
 		f, _ = os.OpenFile(filename, os.O_APPEND, 0666) //打开文件
 	} else {
 		f, _ = os.Create(filename) //创建文件
@@ -26,6 +27,7 @@ func WriteStr(data string, filename string) error {
 		return err
 
 	}
+	return nil
 
 }
 func WriteByte(data []byte, filename string) {
@@ -136,4 +138,15 @@ func Exists(path string) bool {
 		return false
 	}
 	return true
+}
+
+func Mkdir(path string) bool {
+	err := os.Mkdir(path, os.ModePerm)
+	if err != nil {
+		fmt.Printf("mkdir failed![%v]\n", err)
+	} else {
+		fmt.Printf("mkdir %s success!\n", path)
+		return true
+	}
+	return false
 }
