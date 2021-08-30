@@ -1,7 +1,6 @@
 package logger
 
 import (
-	"fmt"
 	"io"
 	"os"
 	"path"
@@ -38,7 +37,7 @@ func init() {
 	if config.Conf != nil {
 		EnableConsole = config.Conf.Console
 		if config.Conf.DebugFlag {
-			fmt.Println("need debug log")
+			// fmt.Println("need debug log")
 			InfoLevel = zapcore.DebugLevel
 		}
 		InfoLogPath = config.Conf.Logs.Log_path
@@ -96,7 +95,7 @@ func init() {
 
 	var core zapcore.Core
 	if EnableConsole {
-		fmt.Print("need console ")
+		// fmt.Print("need console ")
 		core = zapcore.NewTee(
 			//zapcore.NewCore(zapcore.NewConsoleEncoder(enConfig), zapcore.AddSync(infoWriter), infoLevel),
 			zapcore.NewCore(encoder, zapcore.AddSync(infoWriter), infoLevel),
