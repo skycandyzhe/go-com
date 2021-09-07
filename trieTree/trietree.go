@@ -118,3 +118,31 @@ func (u *Trie) HasPrefix(word string) (bool, string) {
 	}
 	return flag, laststr
 }
+
+func (u *Trie) HasPrefixs(word string) (rets []string) {
+	if len(word) == 0 {
+		// 空字符串没有前面
+		return rets
+	}
+	// flag := false
+	var ret []rune
+	// laststr := ""
+	cur := u.root
+	for _, v := range word {
+		t1, ok := cur.next[v]
+		if !ok {
+			return rets
+			// return false, ""
+		} else {
+			ret = append(ret, v)
+			if t1.isWord {
+				// flag = true
+				// laststr = string(ret)
+				rets = append(rets, string(ret))
+			}
+		}
+		cur = t1
+
+	}
+	return rets
+}
