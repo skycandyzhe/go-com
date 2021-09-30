@@ -9,8 +9,8 @@ import (
 )
 
 func TestParseRule(t *testing.T) {
-	fmt.Println(config.Conf)
-	logger.Logger.Info("info test")
-	logger.Logger.Debug("debug test")
-	logger.Logger.Error("debug test")
+	fmt.Println(config.GetDefaultConf())
+	logger.GetDefaultLogger().Info("info test")
+	logger.GetDefaultLogger().Debug("debug test")
+	logger.GetDefaultLogger().Error("debug test")
 }

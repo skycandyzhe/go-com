@@ -5,6 +5,7 @@ import (
 	"os"
 	"path"
 	"strings"
+	"sync"
 	"time"
 
 	"github.com/skycandyzhe/go-com/config"
@@ -17,49 +18,57 @@ import (
 
 // var Logger *zap.SugaredLogger
 
-// var ErrLvel = zapcore.ErrorLevel
-// var InfoLevel = zapcore.InfoLevel
-// var EnableConsole = true
-// var InfoLogPath=""
-// var ErrLogPath=""
+// var errLvel = zapcore.ErrorLevel
+// var infoLevel = zapcore.infoLevel
+// var enableConsole = true
+// var infoLogPath=""
+// var errLogPath=""
 var (
-	Logger        *zap.SugaredLogger
-	ErrLvel       = zapcore.ErrorLevel
-	InfoLevel     = zapcore.InfoLevel
-	EnableConsole = true
-	InfoLogPath   = "logs"
-	ErrLogPath    = "logs/err"
-	LOG_Name      = "msg"
+	mylogger      *zap.SugaredLogger
+	errLvel       = zapcore.ErrorLevel
+	infoLevel     = zapcore.InfoLevel
+	enableConsole = true
+	infoLogPath   = "logs"
+	errLogPath    = "logs/err"
+	lOG_Name      = "msg"
+	mu            sync.Mutex
 )
 
-func init() {
+func GetDefaultLogger() *zap.SugaredLogger {
 
-	if config.Conf != nil {
-		EnableConsole = config.Conf.Console
-		if config.Conf.DebugFlag {
+	mu.Lock()
+	defer mu.Unlock()
+
+	if mylogger != nil {
+		return mylogger
+	}
+	conf := config.GetDefaultConf()
+	if conf != nil {
+		enableConsole = conf.Console
+		if conf.DebugFlag {
 			// fmt.Println("need debug log")
-			InfoLevel = zapcore.DebugLevel
+			infoLevel = zapcore.DebugLevel
 		}
-		InfoLogPath = config.Conf.Logs.Log_path
+		infoLogPath = conf.Logs.Log_path
 
-		ErrLogPath = config.Conf.Logs.Err_path
-		if InfoLogPath == "" {
-			InfoLogPath = "logs"
+		errLogPath = conf.Logs.Err_path
+		if infoLogPath == "" {
+			infoLogPath = "logs"
 		}
-		if ErrLogPath == "" {
-			ErrLogPath = "logs/err"
+		if errLogPath == "" {
+			errLogPath = "logs/err"
 		}
-		LOG_Name = config.Conf.Logs.LogName
-		if LOG_Name == "" {
-			LOG_Name = "msg"
+		lOG_Name = conf.Logs.LogName
+		if lOG_Name == "" {
+			lOG_Name = "msg"
 		}
 
 	}
-	if !file.Exists(InfoLogPath) {
-		file.Mkdir(InfoLogPath)
+	if !file.Exists(infoLogPath) {
+		file.Mkdir(infoLogPath)
 	}
-	if !file.Exists(ErrLogPath) {
-		file.Mkdir(ErrLogPath)
+	if !file.Exists(errLogPath) {
+		file.Mkdir(errLogPath)
 	}
 	// 设置一些基本日志格式 具体含义还比较好理解，直接看zap源码也不难懂
 	encoder := zapcore.NewConsoleEncoder(zapcore.EncoderConfig{
@@ -79,22 +88,22 @@ func init() {
 
 	// 实现两个判断日志等级的interface
 	infoLevel := zap.LevelEnablerFunc(func(lvl zapcore.Level) bool {
-		return lvl >= InfoLevel
+		return lvl >= infoLevel
 	})
 
 	errorLevel := zap.LevelEnablerFunc(func(lvl zapcore.Level) bool {
-		return lvl >= ErrLvel
+		return lvl >= errLvel
 	})
 
 	// 获取 info、error日志文件的io.Writer 抽象 getWriter() 在下方实现
 
-	infoWriter := getWriter(path.Join(InfoLogPath, LOG_Name))
-	errorWriter := getWriter(path.Join(ErrLogPath, LOG_Name))
+	infoWriter := getWriter(path.Join(infoLogPath, lOG_Name))
+	errorWriter := getWriter(path.Join(errLogPath, lOG_Name))
 
 	// 最后创建具体的Logger
 
 	var core zapcore.Core
-	if EnableConsole {
+	if enableConsole {
 		// fmt.Print("need console ")
 		core = zapcore.NewTee(
 			//zapcore.NewCore(zapcore.NewConsoleEncoder(enConfig), zapcore.AddSync(infoWriter), infoLevel),
@@ -111,7 +120,8 @@ func init() {
 		)
 	}
 	log := zap.New(core, zap.AddCaller()) // 需要传入 zap.AddCaller() 才会显示打日志点的文件名和行数, 有点小坑
-	Logger = log.Sugar()
+	mylogger = log.Sugar()
+	return mylogger
 }
 
 func getWriter(filename string) io.Writer {
@@ -119,7 +129,7 @@ func getWriter(filename string) io.Writer {
 	// demo.log是指向最新日志的链接
 	// 保存7天内的日志，每1小时(整点)分割一次日志
 	hook, err := rotatelogs.New(
-		strings.ReplaceAll(filename, ".log", "") + "-%Y%m%d%H.log", // 没有使用go风格反人类的format格式
+		strings.ReplaceAll(filename, ".log", "") + "-%Y%m%d%H.log",
 		//rotatelogs.WithLinkName(filename),
 		//rotatelogs.WithMaxAge(time.Hour*24*7),
 		//rotatelogs.WithRotationTime(time.Hour),

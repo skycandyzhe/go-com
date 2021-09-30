@@ -15,8 +15,8 @@ NOTE:
 func CheckDone(ctx context.Context) error {
 	select {
 	case <-ctx.Done():
-		// logger.Logger.Info(string(debug.Stack()))
-		// logger.Logger.Panic("timeout from timeControl function")
+		// logger.GetDefaultLogger().Info(string(debug.Stack()))
+		// logger.GetDefaultLogger().Panic("timeout from timeControl function")
 		return errors.New("timeout from timeControl function")
 	default:
 		return nil

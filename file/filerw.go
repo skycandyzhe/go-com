@@ -108,14 +108,14 @@ func FileExtraZip(filepath string) {
 
 	// file, err := ioutil.TempFile("", "")
 	// if err != nil {
-	// 	logger.Logger.Warn("create tempfile failure:", err)
+	// 	logger.GetDefaultLogger().Warn("create tempfile failure:", err)
 	// 	return ""
 	// }
 	// defer func() {
 	// 	file.Close()
 	// 	err = os.Remove(file.Name())
 	// 	if err != nil {
-	// 		logger.Logger.Warn("file remove failure:", err)
+	// 		logger.GetDefaultLogger().Warn("file remove failure:", err)
 	// 		return ""
 	// 	}
 	// 	return ""

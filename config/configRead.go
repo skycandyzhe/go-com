@@ -39,7 +39,7 @@ func (c *BaseInfo) GetConf(filepath string) *BaseInfo {
 // conf := info.GetConf("config.yaml")
 var Conf *BaseInfo
 
-func init() {
+func GetDefaultConf() *BaseInfo {
 	if file.CheckFileIsExist("log_config.yaml") {
 		Conf = &BaseInfo{}
 		Conf = Conf.GetConf("log_config.yaml")
@@ -48,5 +48,5 @@ func init() {
 		Conf = nil
 		fmt.Println("not found log_config.yaml")
 	}
-
+	return Conf
 }
