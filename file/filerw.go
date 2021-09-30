@@ -145,7 +145,7 @@ func Mkdir(path string) bool {
 	if err != nil {
 		fmt.Printf("mkdir failed![%v]\n", err)
 	} else {
-		fmt.Printf("mkdir %s success!\n", path)
+		// fmt.Printf("mkdir %s success!\n", path)
 		return true
 	}
 	return false

@@ -43,10 +43,8 @@ func GetDefaultConf() *BaseInfo {
 	if file.CheckFileIsExist("log_config.yaml") {
 		Conf = &BaseInfo{}
 		Conf = Conf.GetConf("log_config.yaml")
-		fmt.Println("read config.yaml :", Conf)
 	} else {
 		Conf = nil
-		fmt.Println("not found log_config.yaml")
 	}
 	return Conf
 }
