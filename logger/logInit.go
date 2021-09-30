@@ -24,6 +24,7 @@ import (
 // var infoLogPath=""
 // var errLogPath=""
 var (
+	Logger        *zap.SugaredLogger
 	mylogger      *zap.SugaredLogger
 	errLvel       = zapcore.ErrorLevel
 	infoLevel     = zapcore.InfoLevel
@@ -33,6 +34,14 @@ var (
 	lOG_Name      = "msg"
 	mu            sync.Mutex
 )
+
+func SetupLogger(log *zap.SugaredLogger) {
+	if log != nil {
+		Logger = log
+	} else {
+		Logger = GetDefaultLogger()
+	}
+}
 
 func GetDefaultLogger() *zap.SugaredLogger {
 
