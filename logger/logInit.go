@@ -68,7 +68,7 @@ type MyLoggerInterface interface {
 
 }
 
-func SetupLogger(log *zap.SugaredLogger) {
+func SetupLogger(log MyLoggerInterface) {
 	if log != nil {
 		Logger = log
 	} else {
