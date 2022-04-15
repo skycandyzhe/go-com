@@ -24,7 +24,7 @@ import (
 // var infoLogPath=""
 // var errLogPath=""
 var (
-	Logger        *zap.SugaredLogger
+	Logger        MyLoggerInterface
 	mylogger      *zap.SugaredLogger
 	errLvel       = zapcore.ErrorLevel
 	infoLevel     = zapcore.InfoLevel
@@ -34,6 +34,39 @@ var (
 	lOG_Name      = "msg"
 	mu            sync.Mutex
 )
+
+type MyLoggerInterface interface {
+
+	// WithField(key string, value interface{}) *Entry
+	// WithFields(fields Fields) *Entry
+	// WithError(err error) *Entry
+
+	Debugf(format string, args ...interface{})
+	Infof(format string, args ...interface{})
+
+	Warnf(format string, args ...interface{})
+	Errorf(format string, args ...interface{})
+	Fatalf(format string, args ...interface{})
+	Panicf(format string, args ...interface{})
+
+	Debug(args ...interface{})
+	Info(args ...interface{})
+	Warn(args ...interface{})
+	Error(args ...interface{})
+	Fatal(args ...interface{})
+	Panic(args ...interface{})
+	// Printf(format string, args ...interface{})
+	// Print(args ...interface{})
+	// Debugln(args ...interface{})
+	// Infoln(args ...interface{})
+	// Println(args ...interface{})
+	// Warnln(args ...interface{})
+	// Warningln(args ...interface{})
+	// Errorln(args ...interface{})
+	// Fatalln(args ...interface{})
+	// Panicln(args ...interface{})
+
+}
 
 func SetupLogger(log *zap.SugaredLogger) {
 	if log != nil {
