@@ -10,7 +10,9 @@ require (
 	github.com/kardianos/service v1.2.1
 	github.com/lestrrat-go/file-rotatelogs v2.4.0+incompatible
 	github.com/lestrrat-go/strftime v1.0.4 // indirect
+	github.com/pkg/sftp v1.13.5
 	go.uber.org/zap v1.18.1
+	golang.org/x/crypto v0.0.0-20211215153901-e495a2d5b3d3
 	golang.org/x/text v0.3.6
 	gopkg.in/yaml.v2 v2.4.0
 )
