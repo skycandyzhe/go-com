@@ -1,4 +1,4 @@
-package pyfeature
+package operator
 
 import "strings"
 

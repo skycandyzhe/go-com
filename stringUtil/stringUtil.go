@@ -1,6 +1,8 @@
 package stringUtil
 
 import (
+	"encoding/json"
+
 	"github.com/axgle/mahonia"
 	"golang.org/x/text/encoding/unicode"
 	"golang.org/x/text/transform"
@@ -91,7 +93,6 @@ func Str_Link(str ...string) string {
 }
 
 /*
-
  */
 func Str_LinkBySpecialChar(joinstr rune, str ...string) string {
 
@@ -111,4 +112,13 @@ func Str_LinkBySpecialChar(joinstr rune, str ...string) string {
 		return string(ret[:len(ret)-1])
 	}
 	return ""
+}
+
+func InterfaceToJson(data interface{}) string {
+	var ret []byte
+	ret, err := json.Marshal(data)
+	if err != nil {
+		return err.Error()
+	}
+	return string(ret)
 }

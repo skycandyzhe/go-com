@@ -4,11 +4,11 @@ import (
 	"fmt"
 	"io/ioutil"
 
-	"github.com/skycandyzhe/go-com/file"
+	"github.com/skycandyzhe/go-com/mypath"
 	"gopkg.in/yaml.v2"
 )
 
-//解析yml文件
+// 解析yml文件
 type BaseInfo struct {
 	Version   string     `yaml:"version"`
 	DebugFlag bool       `yaml:"debugFlag"`
@@ -40,7 +40,7 @@ func (c *BaseInfo) GetConf(filepath string) *BaseInfo {
 var Conf *BaseInfo
 
 func GetDefaultConf() *BaseInfo {
-	if file.CheckFileIsExist("log_config.yaml") {
+	if mypath.FileExists("log_config.yaml") {
 		Conf = &BaseInfo{}
 		Conf = Conf.GetConf("log_config.yaml")
 	} else {

@@ -10,6 +10,7 @@ import (
 /*
 检测context是否到期 如果到期 触发panic
 NOTE:
+
 	使用该函数需要在该函数的上游添加异常处理
 */
 func CheckDone(ctx context.Context) error {

@@ -9,7 +9,6 @@ import (
 	"time"
 
 	"github.com/skycandyzhe/go-com/config"
-	"github.com/skycandyzhe/go-com/file"
 
 	rotatelogs "github.com/lestrrat-go/file-rotatelogs"
 	"go.uber.org/zap"
@@ -106,12 +105,9 @@ func GetDefaultLogger() *zap.SugaredLogger {
 		}
 
 	}
-	if !file.Exists(infoLogPath) {
-		file.Mkdir(infoLogPath)
-	}
-	if !file.Exists(errLogPath) {
-		file.Mkdir(errLogPath)
-	}
+	os.Mkdir(infoLogPath, 0644)
+	os.Mkdir(errLogPath, 0644)
+
 	// 设置一些基本日志格式 具体含义还比较好理解，直接看zap源码也不难懂
 	encoder := zapcore.NewConsoleEncoder(zapcore.EncoderConfig{
 		MessageKey:  "msg",
@@ -164,6 +160,69 @@ func GetDefaultLogger() *zap.SugaredLogger {
 	log := zap.New(core, zap.AddCaller()) // 需要传入 zap.AddCaller() 才会显示打日志点的文件名和行数, 有点小坑
 	mylogger = log.Sugar()
 	return mylogger
+}
+
+func GetLogger(LogPath string, LogName string, EnableDebug bool, EnableConsole bool) *zap.SugaredLogger {
+
+	os.Mkdir(LogPath, 0644)
+
+	// 设置一些基本日志格式 具体含义还比较好理解，直接看zap源码也不难懂
+	encoder := zapcore.NewConsoleEncoder(zapcore.EncoderConfig{
+		MessageKey:  "msg",
+		LevelKey:    "level",
+		EncodeLevel: zapcore.CapitalLevelEncoder,
+		TimeKey:     "ts",
+		EncodeTime: func(t time.Time, enc zapcore.PrimitiveArrayEncoder) {
+			enc.AppendString(t.Format("2006-01-02 15:04:05"))
+		},
+		CallerKey:    "file",
+		EncodeCaller: zapcore.ShortCallerEncoder,
+		EncodeDuration: func(d time.Duration, enc zapcore.PrimitiveArrayEncoder) {
+			enc.AppendInt64(int64(d) / 1000000)
+		},
+	})
+	var log_level zap.LevelEnablerFunc
+	if EnableDebug {
+		log_level = zap.LevelEnablerFunc(func(lvl zapcore.Level) bool {
+			return lvl >= zapcore.DebugLevel
+		})
+	} else {
+		log_level = zap.LevelEnablerFunc(func(lvl zapcore.Level) bool {
+			return lvl >= zapcore.InfoLevel
+		})
+	}
+	// 实现两个判断日志等级的interface
+
+	// 获取 info、error日志文件的io.Writer 抽象 getWriter() 在下方实现
+
+	// 保存7天内的日志，每1小时(整点)分割一次日志
+	infoWriter, _ := rotatelogs.New(
+		strings.ReplaceAll(path.Join(LogPath, LogName), ".log", "") + "-%Y%m%d%H.log",
+		//rotatelogs.WithLinkName(filename),
+		//rotatelogs.WithMaxAge(time.Hour*24*7),
+		//rotatelogs.WithRotationTime(time.Hour),
+	)
+
+	// 最后创建具体的Logger
+
+	var core zapcore.Core
+
+	if EnableConsole {
+		core = zapcore.NewTee(
+			zapcore.NewCore(encoder, zapcore.AddSync(os.Stdout), log_level),
+			zapcore.NewCore(encoder, zapcore.AddSync(infoWriter), log_level),
+		)
+	} else {
+		core = zapcore.NewTee(
+			//zapcore.NewCore(zapcore.NewConsoleEncoder(enConfig), zapcore.AddSync(infoWriter), infoLevel),
+			zapcore.NewCore(encoder, zapcore.AddSync(infoWriter), log_level),
+		)
+
+	}
+
+	log := zap.New(core, zap.AddCaller()) // 需要传入 zap.AddCaller() 才会显示打日志点的文件名和行数, 有点小坑
+
+	return log.Sugar()
 }
 
 func getWriter(filename string) io.Writer {

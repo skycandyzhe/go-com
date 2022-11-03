@@ -4,8 +4,10 @@ go 1.16
 
 require (
 	github.com/axgle/mahonia v0.0.0-20180208002826-3358181d7394
+	github.com/djimenez/iconv-go v0.0.0-20160305225143-8960e66bd3da
 	github.com/dlclark/regexp2 v1.4.0
 	github.com/jonboulle/clockwork v0.2.2 // indirect
+	github.com/kardianos/service v1.2.1
 	github.com/lestrrat-go/file-rotatelogs v2.4.0+incompatible
 	github.com/lestrrat-go/strftime v1.0.4 // indirect
 	go.uber.org/zap v1.18.1
