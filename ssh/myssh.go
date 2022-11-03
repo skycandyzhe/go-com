@@ -3,6 +3,7 @@ package myssh
 import (
 	"fmt"
 	"net"
+	"path/filepath"
 	"time"
 
 	"github.com/pkg/sftp"
@@ -15,7 +16,7 @@ type Cli struct {
 	Username   string       //用户名
 	Password   string       //密码
 	Port       int          //端口号
-	client     *ssh.Client  //ssh客户端
+	SSH        *ssh.Client  //ssh客户端
 	SFTP       *sftp.Client //sftp 客户端
 	LastResult string       //最近一次Run的结果
 	Log        logger.MyLoggerInterface
@@ -42,12 +43,12 @@ func NewSSHClient(ip string, username string, password string, port int) *Cli {
 // 执行shell
 // @param shell shell脚本命令
 func (c *Cli) Run(shell string) (string, error) {
-	if c.client == nil {
+	if c.SSH == nil {
 		if err := c.connect(); err != nil {
 			return "", err
 		}
 	}
-	session, err := c.client.NewSession()
+	session, err := c.SSH.NewSession()
 	if err != nil {
 		return "", err
 	}
@@ -73,7 +74,7 @@ func (c *Cli) connect() error {
 	if err != nil {
 		return err
 	}
-	c.client = sshClient
+	c.SSH = sshClient
 	sftpclient, err := sftp.NewClient(sshClient)
 	if err != nil {
 		c.Log.Errorf("sftp  connnet  to %s @ %s  failure  : %v", c.IP, c.Username, err)
@@ -81,4 +82,17 @@ func (c *Cli) connect() error {
 	}
 	c.SFTP = sftpclient
 	return nil
+}
+func (c *Cli) GetDirFiles(path string) (ret []string, err error) {
+
+	files, err := c.SFTP.ReadDir(path)
+	if err != nil {
+		return nil, err
+	}
+	for _, f := range files {
+		if !f.IsDir() {
+			ret = append(ret, filepath.Join(path, f.Name()))
+		}
+	}
+	return ret, nil
 }
