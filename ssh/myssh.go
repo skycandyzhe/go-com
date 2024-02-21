@@ -7,7 +7,7 @@ import (
 	"time"
 
 	"github.com/pkg/sftp"
-	"github.com/skycandyzhe/go-com/logger"
+	"github.com/skycandyzhe/go-com/easylogger"
 	"golang.org/x/crypto/ssh"
 )
 
@@ -19,7 +19,7 @@ type Cli struct {
 	SSH        *ssh.Client  //ssh客户端
 	SFTP       *sftp.Client //sftp 客户端
 	LastResult string       //最近一次Run的结果
-	Log        logger.MyLoggerInterface
+	Log        easylogger.LoggerINF
 }
 
 // 创建命令行对象
@@ -27,7 +27,7 @@ type Cli struct {
 // @param username 用户名
 // @param password 密码
 // @param port 端口号,默认22
-func NewSSHClient(ip string, username string, password string, port int) *Cli {
+func NewSSHClient(ip string, username string, password string, port int, log easylogger.LoggerINF) *Cli {
 	cli := new(Cli)
 	cli.IP = ip
 	cli.Username = username
@@ -37,6 +37,7 @@ func NewSSHClient(ip string, username string, password string, port int) *Cli {
 	} else {
 		cli.Port = port
 	}
+	cli.Log = log
 	return cli
 }
 
@@ -95,4 +96,14 @@ func (c *Cli) GetDirFiles(path string) (ret []string, err error) {
 		}
 	}
 	return ret, nil
+}
+
+func (c *Cli) UpLoadPath(path string, data []byte) error {
+	f, err := c.SFTP.OpenFile(path, 0666)
+	if err != nil {
+		return err
+	}
+	_, err = f.Write(data)
+	return err
+
 }

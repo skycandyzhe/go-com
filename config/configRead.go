@@ -2,7 +2,7 @@ package config
 
 import (
 	"fmt"
-	"io/ioutil"
+	"os"
 
 	"github.com/skycandyzhe/go-com/mypath"
 	"gopkg.in/yaml.v2"
@@ -10,41 +10,42 @@ import (
 
 // 解析yml文件
 type BaseInfo struct {
-	Version   string     `yaml:"version"`
-	DebugFlag bool       `yaml:"debugFlag"`
-	Console   bool       `yaml:"console"`
-	Logs      LogsEntity `yaml:"logs"`
+	Version   string `yaml:"version"`
+	DebugFlag bool   `yaml:"debugFlag"`
+	Console   bool   `yaml:"console"`
+	LogPath   string `yaml:"log_path"`
 }
 
-type LogsEntity struct {
-	// Log_level string `yaml:"log_level"`
-	LogName  string `yaml:"logname"`
-	Log_path string `yaml:"log_path"`
-	Err_path string `yaml:"err_path"`
-}
+func (c *BaseInfo) saveConf(filepath string) error {
 
-func (c *BaseInfo) GetConf(filepath string) *BaseInfo {
-	yamlFile, err := ioutil.ReadFile(filepath)
+	output, err := yaml.Marshal(c)
 	if err != nil {
-		fmt.Println(err.Error())
+		return err
 	}
-	err = yaml.Unmarshal(yamlFile, c)
-	if err != nil {
-		fmt.Println(err.Error())
-	}
-	return c
+	return os.WriteFile(filepath, output, 0660)
+
 }
-
-// info := config.BaseInfo{}
-// conf := info.GetConf("config.yaml")
-var Conf *BaseInfo
-
 func GetDefaultConf() *BaseInfo {
-	if mypath.FileExists("log_config.yaml") {
-		Conf = &BaseInfo{}
-		Conf = Conf.GetConf("log_config.yaml")
+	logpath := "log_config.yaml"
+	if mypath.FileExists(logpath) {
+		yamlFile, err := os.ReadFile(logpath)
+		if err != nil {
+			fmt.Println(err.Error())
+		}
+		var conf BaseInfo
+		err = yaml.Unmarshal(yamlFile, &conf)
+		if err != nil {
+			fmt.Println(err.Error())
+		}
+		return &conf
 	} else {
-		Conf = nil
+		Conf := &BaseInfo{
+			Version:   "v1.0",
+			DebugFlag: true,
+			Console:   false,
+			LogPath:   "logs/",
+		}
+		Conf.saveConf(logpath)
+		return Conf
 	}
-	return Conf
 }

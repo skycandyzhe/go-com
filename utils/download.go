@@ -2,6 +2,7 @@ package utils
 
 import (
 	"crypto/md5"
+	"fmt"
 	"io"
 	"net/http"
 	"os"
@@ -11,7 +12,7 @@ import (
 	"github.com/skycandyzhe/go-com/mypath"
 )
 
-//下载文件到临时路径
+// 下载文件到临时路径
 func DownLoadFileToTemp(DownloadUrl string) (string, error) {
 	res, err := http.Get(DownloadUrl)
 	if err != nil {
@@ -35,7 +36,7 @@ func DownLoadFileToTemp(DownloadUrl string) (string, error) {
 	return f.Name(), nil
 }
 
-//获取文件hash
+// 获取文件hash
 func Hash_Md5(path string) ([]byte, error) {
 	filein, err := os.Open(path)
 	if err != nil {
@@ -44,4 +45,14 @@ func Hash_Md5(path string) ([]byte, error) {
 	hs := md5.New()
 	io.Copy(hs, filein)
 	return hs.Sum(nil), nil
+}
+func Hash_Md5_Str(path string) (string, error) {
+	filein, err := os.Open(path)
+	if err != nil {
+		return "", err
+	}
+	hs := md5.New()
+	io.Copy(hs, filein)
+
+	return fmt.Sprintf("%x", hs.Sum(nil)), nil
 }

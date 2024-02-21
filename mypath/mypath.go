@@ -171,30 +171,6 @@ func ReadTargetSizeFileByte(filepath string, targetSize int64) ([]byte, error) {
 	return buf, err
 }
 
-func FileExtraZip(filepath string) {
-
-	// file, err := ioutil.TempFile("", "")
-	// if err != nil {
-	// 	logger.GetDefaultLogger().Warn("create tempfile failure:", err)
-	// 	return ""
-	// }
-	// defer func() {
-	// 	file.Close()
-	// 	err = os.Remove(file.Name())
-	// 	if err != nil {
-	// 		logger.GetDefaultLogger().Warn("file remove failure:", err)
-	// 		return ""
-	// 	}
-	// 	return ""
-	// }()
-
-	// if _, err := file.Write([]byte(buf)); err != nil {
-	// 	panic(err)
-	// }
-	// // file.Close()
-	// fmt.Println(file.Name())
-}
-
 func ListDir(dirpath string) (dirs []string, files []string) {
 	infos, err := ioutil.ReadDir(dirpath)
 	if err != nil {
