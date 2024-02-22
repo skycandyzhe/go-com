@@ -23,12 +23,14 @@ func (c *BaseInfo) saveConf(filepath string) error {
 		return err
 	}
 	return os.WriteFile(filepath, output, 0660)
-
 }
 func GetDefaultConf() *BaseInfo {
-	logpath := "log_config.yaml"
-	if mypath.FileExists(logpath) {
-		yamlFile, err := os.ReadFile(logpath)
+	return GetConf("log_config.yaml")
+}
+func GetConf(configPath string) *BaseInfo {
+
+	if mypath.FileExists(configPath) {
+		yamlFile, err := os.ReadFile(configPath)
 		if err != nil {
 			fmt.Println(err.Error())
 		}
@@ -45,7 +47,7 @@ func GetDefaultConf() *BaseInfo {
 			Console:   false,
 			LogPath:   "logs/",
 		}
-		Conf.saveConf(logpath)
+		Conf.saveConf(configPath)
 		return Conf
 	}
 }

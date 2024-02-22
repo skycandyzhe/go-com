@@ -43,9 +43,10 @@ type LoggerINF interface {
 	Panic(args ...interface{})
 }
 
-func init() {
+func Init() {
 	Logger = GetDefaultLogger()
 }
+
 func SetupOtherLogger(log LoggerINF) {
 	if log != nil {
 		Logger = log
@@ -53,7 +54,7 @@ func SetupOtherLogger(log LoggerINF) {
 		Logger = GetDefaultLogger()
 	}
 }
-func GetDefaultLogger() *zap.SugaredLogger {
+func GetLogger(cnfpath string) *zap.SugaredLogger {
 
 	mu.Lock()
 	defer mu.Unlock()
@@ -61,7 +62,7 @@ func GetDefaultLogger() *zap.SugaredLogger {
 	if mylogger != nil {
 		return mylogger
 	}
-	conf := config.GetDefaultConf()
+	conf := config.GetConf(cnfpath)
 	enableConsole = conf.Console
 	if conf.DebugFlag {
 		// fmt.Println("need debug log")
@@ -76,7 +77,7 @@ func GetDefaultLogger() *zap.SugaredLogger {
 	os.Mkdir(infoLogPath, os.ModePerm)
 	// 设置一些基本日志格式 具体含义还比较好理解，直接看zap源码也不难懂
 	encoder := zapcore.NewConsoleEncoder(zapcore.EncoderConfig{
-		// MessageKey:  "msg",
+		MessageKey:  "msg",
 		LevelKey:    "level",
 		EncodeLevel: zapcore.CapitalLevelEncoder,
 		TimeKey:     "ts",
@@ -113,6 +114,9 @@ func GetDefaultLogger() *zap.SugaredLogger {
 	log := zap.New(core, zap.AddCaller()) // 需要传入 zap.AddCaller() 才会显示打日志点的文件名和行数, 有点小坑
 	mylogger = log.Sugar()
 	return mylogger
+}
+func GetDefaultLogger() *zap.SugaredLogger {
+	return GetLogger("log_config.yaml")
 }
 
 func getWriter(filename string) io.Writer {
