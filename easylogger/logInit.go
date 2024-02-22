@@ -5,6 +5,7 @@ import (
 	"os"
 	"path"
 	"path/filepath"
+	"runtime"
 	"strings"
 	"sync"
 	"time"
@@ -72,7 +73,7 @@ func GetDefaultLogger() *zap.SugaredLogger {
 	_, log_name = filepath.Split(log_name)
 	log_name = strings.TrimSuffix(log_name, path.Ext(log_name))
 
-	os.Mkdir(infoLogPath, 0644)
+	os.Mkdir(infoLogPath, os.ModePerm)
 	// 设置一些基本日志格式 具体含义还比较好理解，直接看zap源码也不难懂
 	encoder := zapcore.NewConsoleEncoder(zapcore.EncoderConfig{
 		// MessageKey:  "msg",
@@ -118,8 +119,20 @@ func getWriter(filename string) io.Writer {
 	// 生成rotatelogs的Logger 实际生成的文件名 demo.log.YYmmddHH
 	// demo.log是指向最新日志的链接
 	// 保存7天内的日志，每24H分割一次日志,单个日志最大20M 最多保留7个日志
+	if runtime.GOOS == "windows" {
+		hook, err := rotatelogs.New(
+			strings.ReplaceAll(filename, ".log", "")+"-%Y%m%d%H%M.log",
+			rotatelogs.WithRotationTime(time.Hour*24), //rotate 最小为5分钟轮询。默认60s  低于1分钟就按1分钟来
+			rotatelogs.WithRotationSize(20*1024*1024),
+			rotatelogs.WithRotationCount(7),
+		)
+		if err != nil {
+			panic(err)
+		}
+		return hook
+	}
 	hook, err := rotatelogs.New(
-		strings.ReplaceAll(filename, ".log", "")+"-%Y%m%d%H.log",
+		strings.ReplaceAll(filename, ".log", "")+"-%Y%m%d%H%M.log",
 		rotatelogs.WithLinkName(filename+"_latest.log"), // 生成软链，指向最新日志文件
 		rotatelogs.WithRotationTime(time.Hour*24),       //rotate 最小为5分钟轮询。默认60s  低于1分钟就按1分钟来
 		rotatelogs.WithRotationSize(20*1024*1024),
